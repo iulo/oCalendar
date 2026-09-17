@@ -1,4 +1,4 @@
-# 一页日历
+# 哦！日历
 
 基于 Vue 3、TypeScript、Vite 和 UnoCSS 的全年日历 PWA。界面与全年日历的交互思路参考 [ZenCalendar](https://github.com/ciaoca/ZenCalendar)，代码为独立实现。
 
@@ -13,9 +13,9 @@
 ## 本地开发
 
 ```bash
-npm ci
-npm run dev
-npm run build
+pnpm install
+pnpm dev
+pnpm build
 ```
 
 ## GitHub Pages

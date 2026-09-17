@@ -12,8 +12,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icon-192.png', 'icon-512.png'],
       manifest: {
-        name: '一页日历',
-        short_name: '日历',
+        name: '哦！日历',
+        short_name: '哦！日历',
         description: '轻巧的全年日历，节日与农历一目了然。',
         theme_color: '#f8f7f4',
         background_color: '#f8f7f4',

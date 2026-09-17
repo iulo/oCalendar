@@ -4,6 +4,7 @@ import { dateKey, getLunar, monthDays, type CalendarDay } from './calendar'
 
 type Theme = 'paper' | 'grid'
 type Settings = {
+  version: number
   weekStart: number
   showAdjacent: boolean
   showWeekNumbers: boolean
@@ -18,7 +19,8 @@ const stored = (() => {
   catch { return {} }
 })()
 const settings = ref<Settings>({
-  weekStart: stored.weekStart === 1 ? 1 : 0,
+  version: 2,
+  weekStart: stored.version === 2 && stored.weekStart === 0 ? 0 : 1,
   showAdjacent: stored.showAdjacent ?? true,
   showWeekNumbers: stored.showWeekNumbers ?? false,
   fixedRows: stored.fixedRows ?? false,
@@ -43,7 +45,6 @@ const selectedTitle = computed(() => selected.value?.date.toLocaleDateString('zh
 function changeYear(delta: number) {
   year.value = Math.max(1900, Math.min(2100, year.value + delta))
   selected.value = null
-  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 async function goToday() {
@@ -76,36 +77,26 @@ const selectedLunar = computed(() => selected.value ? getLunar(selected.value.da
 
 <template>
   <div class="app-shell min-h-screen text-stone-800" :class="`theme-${settings.theme}`" @keydown="handleKeydown">
-    <header class="page-header mx-auto max-w-1500px px-5 sm:px-8 lg:px-12 pt-8 sm:pt-11 pb-6 sm:pb-9">
-      <div class="flex items-start justify-between gap-4">
-        <div>
-          <p class="text-xs font-700 tracking-[.32em] text-orange-700/75 uppercase mb-3">A YEAR AT A GLANCE</p>
-          <h1 class="m-0 text-3xl sm:text-4xl font-700 tracking-tight text-stone-900">一页日历<span class="ml-2 text-orange-700">.</span></h1>
-          <p class="mt-3 mb-0 text-sm sm:text-base text-stone-500">把日子铺开，慢慢看。</p>
-        </div>
-        <button class="icon-button h-10 w-10 sm:h-11 sm:w-11" type="button" aria-label="打开设置" @click="settingsOpen = true">
-          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--page-bg)"/><circle cx="15" cy="17" r="2" fill="var(--page-bg)"/></svg>
-        </button>
-      </div>
-      <div class="mt-8 sm:mt-10 flex flex-wrap items-end justify-between gap-4">
-        <div class="flex items-baseline gap-3">
-          <span class="text-5xl sm:text-6xl font-700 leading-none tracking-tight tabular-nums text-stone-900">{{ year }}</span>
-          <span class="text-sm sm:text-base text-stone-400">全年日历</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <button class="surface rounded-full px-4 py-2 text-sm font-600 cursor-pointer hover:bg-stone-50" type="button" @click="goToday">回到今天</button>
-          <div class="surface rounded-full flex items-center p-1">
-            <button class="icon-button h-8 w-8" type="button" aria-label="上一年" :disabled="year <= 1900" @click="changeYear(-1)">‹</button>
+    <header class="page-header sticky top-0 z-30 bg-[#f8f7f4]/92 backdrop-blur-lg">
+      <div class="toolbar mx-auto max-w-1500px px-3 sm:px-7 lg:px-11 flex items-center justify-between gap-2">
+        <h1 class="m-0 shrink-0 text-lg sm:text-xl font-700 tracking-tight text-stone-900">哦！日历</h1>
+        <nav class="flex items-center gap-1 sm:gap-2" aria-label="日历操作">
+          <div class="year-control surface rounded-full flex items-center p-1">
+            <button class="icon-button h-8 w-7 sm:w-8 text-xl" type="button" aria-label="上一年" :disabled="year <= 1900" @click="changeYear(-1)">‹</button>
             <label class="sr-only" for="year-input">年份</label>
-            <input id="year-input" class="year-input w-13 border-0 bg-transparent text-center text-sm font-600 text-stone-700 tabular-nums outline-none" type="number" min="1900" max="2100" :value="year" @change="handleYearInput" />
-            <button class="icon-button h-8 w-8" type="button" aria-label="下一年" :disabled="year >= 2100" @click="changeYear(1)">›</button>
+            <input id="year-input" class="year-input w-12 sm:w-13 border-0 bg-transparent text-center text-sm font-600 text-stone-700 tabular-nums outline-none" type="number" min="1900" max="2100" :value="year" @change="handleYearInput" />
+            <button class="icon-button h-8 w-7 sm:w-8 text-xl" type="button" aria-label="下一年" :disabled="year >= 2100" @click="changeYear(1)">›</button>
           </div>
-        </div>
+          <button class="surface rounded-full px-3 sm:px-4 h-10 text-sm font-600 cursor-pointer hover:bg-stone-50" type="button" @click="goToday">今天</button>
+          <button class="icon-button h-10 w-10" type="button" aria-label="打开设置" @click="settingsOpen = true">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--page-bg)"/><circle cx="15" cy="17" r="2" fill="var(--page-bg)"/></svg>
+          </button>
+        </nav>
       </div>
     </header>
 
-    <main class="mx-auto max-w-1500px px-3 sm:px-7 lg:px-11 pb-24">
-      <div class="year-grid grid grid-cols-1 md:grid-cols-2 gap-x-5 lg:gap-x-8 gap-y-5 sm:gap-y-7">
+    <main class="mx-auto max-w-1500px px-3 sm:px-7 lg:px-11 pt-3 sm:pt-5 pb-14">
+      <div class="year-grid grid grid-cols-1 lg:grid-cols-2 gap-x-5 lg:gap-x-8 gap-y-5 sm:gap-y-7">
         <section v-for="month in months" :key="month.index" class="month-card surface rounded-2xl sm:rounded-3xl p-3 sm:p-5 lg:p-6" :aria-label="`${year}年${month.index + 1}月`">
           <header class="month-header flex items-baseline justify-between px-2 sm:px-3 mb-5 sm:mb-6">
             <h2 class="m-0 flex items-baseline gap-2"><span class="month-index text-3xl sm:text-4xl font-700 tabular-nums">{{ String(month.index + 1).padStart(2, '0') }}</span><span class="text-sm font-600 text-stone-500">{{ month.name }}</span></h2>
@@ -136,7 +127,7 @@ const selectedLunar = computed(() => selected.value ? getLunar(selected.value.da
           </div>
         </section>
       </div>
-      <footer class="text-center text-xs text-stone-400 pt-10 pb-4">一页日历 · 公历与农历同行</footer>
+      <footer class="text-center text-xs text-stone-400 pt-10 pb-4">今年到底了哦～</footer>
     </main>
 
     <div v-if="selected" class="dialog-backdrop" @click.self="selected = null">
@@ -154,7 +145,7 @@ const selectedLunar = computed(() => selected.value ? getLunar(selected.value.da
           <div><p class="m-0 mb-1 text-xs font-700 tracking-[.2em] text-orange-700">PREFERENCES</p><h2 id="settings-title" class="m-0 text-2xl">日历设置</h2></div>
           <button class="icon-button h-10 w-10 text-2xl" type="button" aria-label="关闭设置" @click="settingsOpen = false">×</button>
         </div>
-        <label class="setting-row"><span>每周从周一开始</span><input v-model="settings.weekStart" type="checkbox" :true-value="1" :false-value="0" /></label>
+        <label class="setting-row"><span>每周从周日开始</span><input v-model="settings.weekStart" type="checkbox" :true-value="0" :false-value="1" /></label>
         <label class="setting-row"><span>显示前后月份日期</span><input v-model="settings.showAdjacent" type="checkbox" /></label>
         <label class="setting-row"><span>显示周数</span><input v-model="settings.showWeekNumbers" type="checkbox" /></label>
         <label class="setting-row"><span>每月固定六行</span><input v-model="settings.fixedRows" type="checkbox" /></label>
