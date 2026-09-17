@@ -1,0 +1,73 @@
+:root {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; }
+button, input { font: inherit; }
+button:disabled { cursor: default; opacity: .35; }
+.app-shell { --page-bg: #f8f7f4; --accent: #a64a35; background: var(--page-bg); }
+.page-header { border-bottom: 1px solid #e9e5df; }
+.year-input { appearance: textfield; -moz-appearance: textfield; }
+.year-input::-webkit-inner-spin-button, .year-input::-webkit-outer-spin-button { appearance: none; margin: 0; }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.calendar-grid.with-weeks { grid-template-columns: 22px repeat(7, minmax(0, 1fr)); }
+.weekday { min-height: 27px; display: flex; align-items: flex-start; justify-content: center; font-size: 11px; font-weight: 650; color: #a8a29e; }
+.weekday.weekend-label { color: #bd7467; }
+.week-label, .week-number { color: #c2beb8; font-size: 10px; display: flex; align-items: center; justify-content: center; }
+.day-cell { position: relative; min-width: 0; height: clamp(49px, 5.2vw, 73px); padding: 3px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #34312e; text-align: center; cursor: pointer; transition: background-color .18s, transform .18s; }
+.day-cell:hover:not(:disabled) { background: #f3efea; transform: translateY(-1px); }
+.day-cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.day-content { display: flex; height: 100%; flex-direction: column; align-items: center; justify-content: center; gap: 1px; overflow: hidden; }
+.day-number { font-size: clamp(17px, 1.7vw, 22px); line-height: 1.12; font-weight: 550; font-variant-numeric: tabular-nums; }
+.day-subtitle { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: clamp(9px, .85vw, 11px); line-height: 1.45; color: #9c9893; }
+.day-cell.is-weekend .day-number { color: #ab594a; }
+.day-subtitle.special { color: var(--accent); font-weight: 650; }
+.day-cell.outside { opacity: .32; }
+.day-cell.is-today { background: #aa4b38; color: white; box-shadow: 0 6px 16px #aa4b3826; }
+.day-cell.is-today .day-number, .day-cell.is-today .day-subtitle { color: white; }
+.day-cell.is-today:hover:not(:disabled) { background: #943c2a; }
+.day-cell.is-selected:not(.is-today) { border-color: #a64a35; background: #fbf0eb; }
+.day-cell.is-empty { visibility: hidden; }
+.today-dot { display: none; }
+.dialog-backdrop { position: fixed; z-index: 50; inset: 0; display: flex; align-items: flex-end; justify-content: center; background: #29231e6b; padding: 16px; }
+.detail-panel, .settings-panel { position: relative; width: min(100%, 440px); border-radius: 24px; padding: 28px; box-shadow: 0 24px 60px #29231e29; }
+.settings-panel { max-height: calc(100dvh - 32px); overflow-y: auto; }
+.setting-row { cursor: pointer; font-size: 14px; }
+.setting-row input { width: 18px; height: 18px; accent-color: #a64a35; cursor: pointer; }
+.theme-option { padding: 15px; border: 1px solid #e7e3de; border-radius: 12px; background: #faf9f7; cursor: pointer; font-size: 14px; }
+.theme-option.active { border-color: #a64a35; color: #943c2a; background: #fbf0eb; font-weight: 650; }
+.theme-grid { --page-bg: #f2f3f3; --accent: #435e6d; }
+.theme-grid .day-cell { border-color: #e5e7e8; border-radius: 4px; }
+.theme-grid .day-cell.is-today { background: #435e6d; box-shadow: 0 6px 16px #435e6d26; }
+.theme-grid .day-cell.is-selected:not(.is-today) { border-color: #435e6d; background: #eef3f5; }
+.theme-grid .day-cell:hover:not(:disabled) { background: #eef3f5; }
+.theme-grid .day-cell.is-today:hover:not(:disabled) { background: #354e5b; }
+.theme-grid .day-subtitle.special { color: #435e6d; }
+.theme-grid .day-cell.is-today .day-subtitle { color: white; }
+.theme-grid .weekday.weekend-label, .theme-grid .day-cell.is-weekend .day-number { color: #557589; }
+
+@media (min-width: 640px) {
+  .calendar-grid { gap: 6px; }
+  .dialog-backdrop { align-items: center; }
+}
+@media (max-width: 639px) {
+  .day-cell { height: clamp(47px, 14.5vw, 65px); }
+  .day-number { font-size: 19px; }
+  .day-subtitle { font-size: 10px; }
+  .detail-panel, .settings-panel { border-radius: 22px 22px 16px 16px; padding: 25px; }
+}
+@media print {
+  .app-shell { background: white; }
+  .page-header { padding: 0 0 16px; }
+  .page-header button, .page-header .surface, .page-header p:first-child, .page-header p:last-child, footer { display: none !important; }
+  .year-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8mm; }
+  .month-card { box-shadow: none !important; break-inside: avoid; padding: 3mm !important; }
+  .day-cell { height: 9mm; }
+  .dialog-backdrop { display: none; }
+}
