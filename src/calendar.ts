@@ -1,3 +1,5 @@
+import { Solar } from 'lunar-javascript'
+
 export type CalendarDay = {
   date: Date
   key: string
@@ -36,11 +38,6 @@ const solarTermNames = [
   '立夏', '小满', '芒种', '夏至', '小暑', '大暑', '立秋', '处暑',
   '白露', '秋分', '寒露', '霜降', '立冬', '小雪', '大雪', '冬至'
 ]
-const solarTermMinutes = [
-  0, 21208, 42467, 63836, 85337, 107014, 128867, 150921,
-  173149, 195551, 218072, 240693, 263343, 285989, 308563, 331033,
-  353350, 375494, 397447, 419210, 440795, 462224, 483532, 504758
-]
 const solarTermCache = new Map<number, Map<string, string>>()
 
 export function dateKey(date: Date): string {
@@ -51,14 +48,11 @@ function getSolarTerms(year: number): Map<string, string> {
   const existing = solarTermCache.get(year)
   if (existing) return existing
   const result = new Map<string, string>()
-  solarTermMinutes.forEach((minutes, index) => {
-    // The familiar 1900 epoch formula keeps terms aligned across 1900–2100.
-    const instant = new Date(Date.UTC(1900, 0, 6, 2, 5) +
-      31556925974.7 * (year - 1900) + minutes * 60000)
-    const local = new Date(instant.getTime() + 8 * 60 * 60 * 1000)
-    const key = `${year}-${String(Math.floor(index / 2) + 1).padStart(2, '0')}-${String(local.getUTCDate()).padStart(2, '0')}`
-    result.set(key, solarTermNames[index])
-  })
+  const table = Solar.fromYmd(year, 6, 1).getLunar().getJieQiTable()
+  for (const name of solarTermNames) {
+    const date = table[name]?.toYmd()
+    if (date?.startsWith(`${year}-`)) result.set(date, name)
+  }
   solarTermCache.set(year, result)
   return result
 }

@@ -9,6 +9,7 @@
     "preview": "vite preview --host 0.0.0.0"
   },
   "dependencies": {
+    "lunar-javascript": "^1.7.7",
     "vue": "^3.5.0"
   },
   "devDependencies": {
