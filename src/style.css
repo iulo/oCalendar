@@ -72,7 +72,8 @@ button:disabled { cursor: default; opacity: .35; }
 .app-shell { --page-bg: #f8f7f4; --accent: #a64a35; background: var(--page-bg); }
 .page-header { background-color: color-mix(in srgb, var(--page-bg) 92%, transparent); }
 .toolbar { min-height: 60px; padding-top: env(safe-area-inset-top); }
-.year-input { appearance: textfield; -moz-appearance: textfield; }
+.year-control { white-space: nowrap; }
+.year-input { appearance: textfield; -moz-appearance: textfield; width: 56px; min-width: 56px; flex: 0 0 56px; padding: 0; }
 .year-input::-webkit-inner-spin-button, .year-input::-webkit-outer-spin-button { appearance: none; margin: 0; }
 .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
 .calendar-grid.with-weeks { grid-template-columns: 22px repeat(7, minmax(0, 1fr)); }
