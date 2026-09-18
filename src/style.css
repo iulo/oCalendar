@@ -6,6 +6,60 @@
   -webkit-font-smoothing: antialiased;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root { color-scheme: dark; }
+  body { background: #1c1b1a; }
+  .app-shell { --page-bg: #1c1b1a; --accent: #d4826d; color: #e7e5e4; }
+  .page-header { background-color: color-mix(in srgb, var(--page-bg) 92%, transparent); }
+  .surface { background-color: rgba(41, 37, 36, .92); border-color: #44403c; }
+  .toolbar h1, .month-index, .day-number { color: #f5f5f4; }
+  .text-stone-900 { color: #f5f5f4; }
+  .text-stone-800, .text-stone-700 { color: #e7e5e4; }
+  .text-stone-500, .text-stone-400 { color: #a8a29e; }
+  .weekday { color: #a8a29e; }
+  .weekday.weekend-label, .day-cell.is-weekend .day-number { color: #e08b78; }
+  .day-cell { color: #e7e5e4; }
+  .day-cell:hover:not(:disabled) { background: #292524; }
+  .day-subtitle { color: #a8a29e; }
+  .day-cell.is-holiday { background: #422a27; }
+  .day-cell.is-workday { background: #292d2e; }
+  .day-cell.is-selected:not(.is-today) { border-color: #d4826d; background: #3b2925; }
+  .today-button { background: rgba(41, 37, 36, .9); border-color: #57534e; color: #e7e5e4; }
+  .today-button:hover { background: #44403c; color: #fff; }
+  .theme-option { background: #292524; border-color: #57534e; color: #e7e5e4; }
+  .theme-option.active { background: #3b2925; border-color: #d4826d; color: #f0a18e; }
+  .detail-panel, .settings-panel { color: #e7e5e4; }
+  .dialog-backdrop { background: #090807b8; }
+  .year-input { color: #e7e5e4; }
+  .theme-grid { --page-bg: #202526; --accent: #8fb5c2; }
+  .theme-grid .day-cell { border-color: #3f4a4d; }
+  .theme-grid .day-cell:hover:not(:disabled) { background: #2d383b; }
+}
+
+/* 调试：访问 ?theme=dark 或 ?theme=light 强制预览对应主题。 */
+html[data-theme="dark"] { color-scheme: dark; }
+html[data-theme="light"] { color-scheme: light; }
+html[data-theme="dark"] body { background: #1c1b1a; }
+html[data-theme="dark"] .app-shell { --page-bg: #1c1b1a; --accent: #d4826d; color: #e7e5e4; }
+html[data-theme="dark"] .page-header { background: rgba(28, 27, 26, .92); }
+html[data-theme="dark"] .surface { background: rgba(41, 37, 36, .92); border-color: #44403c; }
+html[data-theme="dark"] .toolbar h1, html[data-theme="dark"] .month-index, html[data-theme="dark"] .day-number, html[data-theme="dark"] .text-stone-900 { color: #f5f5f4; }
+html[data-theme="dark"] .text-stone-800, html[data-theme="dark"] .text-stone-700 { color: #e7e5e4; }
+html[data-theme="dark"] .text-stone-500, html[data-theme="dark"] .text-stone-400, html[data-theme="dark"] .weekday { color: #a8a29e; }
+html[data-theme="dark"] .day-cell { color: #e7e5e4; }
+html[data-theme="dark"] .day-cell:hover:not(:disabled) { background: #292524; }
+html[data-theme="dark"] .day-subtitle { color: #a8a29e; }
+html[data-theme="dark"] .day-cell.is-holiday { background: #422a27; }
+html[data-theme="dark"] .day-cell.is-workday { background: #292d2e; }
+html[data-theme="dark"] .day-cell.is-selected:not(.is-today) { border-color: #d4826d; background: #3b2925; }
+html[data-theme="dark"] .today-button { background: rgba(41, 37, 36, .9); border-color: #57534e; color: #e7e5e4; }
+html[data-theme="dark"] .today-button:hover { background: #44403c; color: #fff; }
+html[data-theme="dark"] .theme-option { background: #292524; border-color: #57534e; color: #e7e5e4; }
+html[data-theme="dark"] .theme-option.active { background: #3b2925; border-color: #d4826d; color: #f0a18e; }
+html[data-theme="dark"] .detail-panel, html[data-theme="dark"] .settings-panel { color: #e7e5e4; }
+html[data-theme="dark"] .dialog-backdrop { background: #090807b8; }
+html[data-theme="dark"] .year-input { color: #e7e5e4; }
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; }
