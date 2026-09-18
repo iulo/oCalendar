@@ -97,8 +97,8 @@ const selectedLunar = computed(() => selected.value ? getLunar(selected.value.da
 
     <main class="mx-auto max-w-1500px px-3 sm:px-7 lg:px-11 pt-3 sm:pt-5 pb-14">
       <div class="year-grid grid grid-cols-1 lg:grid-cols-2 gap-x-5 lg:gap-x-8 gap-y-5 sm:gap-y-7">
-        <section v-for="month in months" :key="month.index" class="month-card surface rounded-2xl sm:rounded-3xl p-3 sm:p-5 lg:p-6" :aria-label="`${year}年${month.index + 1}月`">
-          <header class="month-header flex items-baseline justify-between px-2 sm:px-3 mb-5 sm:mb-6">
+        <section v-for="month in months" :key="month.index" class="month-card surface rounded-2xl sm:rounded-3xl p-3 sm:px-5 sm:py-4 lg:px-6" :aria-label="`${year}年${month.index + 1}月`">
+          <header class="month-header flex items-baseline justify-between px-2 sm:px-3 mb-3 sm:mb-4">
             <h2 class="m-0 flex items-baseline gap-2"><span class="month-index text-3xl sm:text-4xl font-700 tabular-nums">{{ String(month.index + 1).padStart(2, '0') }}</span><span class="text-sm font-600 text-stone-500">{{ month.name }}</span></h2>
             <span class="text-xs font-600 tracking-widest text-stone-400">{{ year }}</span>
           </header>
@@ -109,7 +109,7 @@ const selectedLunar = computed(() => selected.value ? getLunar(selected.value.da
               <span v-if="settings.showWeekNumbers && index % 7 === 0" class="week-number">{{ day.weekNumber }}</span>
               <button
                 class="day-cell"
-                :class="{ 'outside': !day.inMonth, 'is-today': day.isToday, 'is-selected': selected?.key === day.key, 'is-weekend': day.isWeekend, 'has-festival': day.festival, 'is-empty': !day.inMonth && !settings.showAdjacent }"
+                :class="{ 'outside': !day.inMonth, 'is-today': day.isToday, 'is-selected': selected?.key === day.key, 'is-weekend': day.isWeekend, 'has-festival': day.festival, 'is-holiday': day.holidayType === 'holiday', 'is-workday': day.holidayType === 'workday', 'is-empty': !day.inMonth && !settings.showAdjacent }"
                 :id="day.inMonth ? `day-${day.key}` : undefined"
                 :aria-label="`${day.date.toLocaleDateString('zh-CN')} ${day.festival || day.solarTerm || day.lunar}${day.isToday ? ' 今天' : ''}`"
                 :aria-pressed="selected?.key === day.key"
@@ -119,7 +119,8 @@ const selectedLunar = computed(() => selected.value ? getLunar(selected.value.da
               >
                 <span v-if="day.inMonth || settings.showAdjacent" class="day-content">
                   <span class="day-number">{{ day.day }}</span>
-                  <span class="day-subtitle" :class="{ 'special': day.festival || day.solarTerm }">{{ day.festival || day.solarTerm || day.lunar }}</span>
+                  <span class="holiday-badge" v-if="day.holidayType">{{ day.holidayType === 'holiday' ? '休' : '班' }}</span>
+                  <span class="day-subtitle" :class="{ 'special': day.festival || day.solarTerm || day.holidayType }">{{ day.festival || day.solarTerm || day.lunar }}</span>
                   <span v-if="day.isToday" class="today-dot" aria-hidden="true"></span>
                 </span>
               </button>

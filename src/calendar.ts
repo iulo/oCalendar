@@ -1,4 +1,5 @@
 import { Solar } from 'lunar-javascript'
+import { getHolidayInfo, type HolidayType } from './holidays'
 
 export type CalendarDay = {
   date: Date
@@ -11,6 +12,8 @@ export type CalendarDay = {
   lunar: string
   festival: string
   solarTerm: string
+  holidayType?: HolidayType
+  holidayName?: string
 }
 
 const lunarFormatter = new Intl.DateTimeFormat('zh-CN-u-ca-chinese', {
@@ -92,11 +95,13 @@ export function monthDays(year: number, month: number, weekStart: number, fixedR
     const key = dateKey(date)
     const lunar = getLunar(date)
     const festival = solarFestivals[key.slice(5)] ?? lunar.festival
+    const holiday = getHolidayInfo(key)
     return {
       date, key, day: date.getDate(), inMonth: date.getMonth() === month,
       isToday: key === today, isWeekend: date.getDay() === 0 || date.getDay() === 6,
       weekNumber: isoWeek(date), lunar: lunar.label, festival,
-      solarTerm: getSolarTerms(date.getFullYear()).get(key) ?? ''
+      solarTerm: getSolarTerms(date.getFullYear()).get(key) ?? '',
+      holidayType: holiday?.type, holidayName: holiday?.name
     }
   })
 }

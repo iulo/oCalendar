@@ -18,16 +18,20 @@ button:disabled { cursor: default; opacity: .35; }
 .year-input::-webkit-inner-spin-button, .year-input::-webkit-outer-spin-button { appearance: none; margin: 0; }
 .calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
 .calendar-grid.with-weeks { grid-template-columns: 22px repeat(7, minmax(0, 1fr)); }
-.weekday { min-height: 29px; display: flex; align-items: flex-start; justify-content: center; font-size: 12px; font-weight: 650; color: #a8a29e; }
+.weekday { min-height: 24px; display: flex; align-items: flex-start; justify-content: center; font-size: 12px; font-weight: 650; color: #a8a29e; }
 .weekday.weekend-label { color: #bd7467; }
 .week-label, .week-number { color: #c2beb8; font-size: 10px; display: flex; align-items: center; justify-content: center; }
-.day-cell { position: relative; min-width: 0; height: clamp(54px, 5.6vw, 78px); padding: 3px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #34312e; text-align: center; cursor: pointer; transition: background-color .18s, transform .18s; }
+.day-cell { position: relative; min-width: 0; height: clamp(54px, 4.8vw, 68px); padding: 3px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: #34312e; text-align: center; cursor: pointer; transition: background-color .18s, transform .18s; }
 .day-cell:hover:not(:disabled) { background: #f3efea; transform: translateY(-1px); }
 .day-cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .day-content { display: flex; height: 100%; flex-direction: column; align-items: center; justify-content: center; gap: 2px; overflow: hidden; }
 .day-number { font-size: clamp(21px, 2vw, 26px); line-height: 1.12; font-weight: 550; font-variant-numeric: tabular-nums; }
 .day-subtitle { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: clamp(11px, 1vw, 13px); line-height: 1.35; color: #9c9893; }
 .day-cell.is-weekend .day-number { color: #ab594a; }
+.day-cell.is-holiday { background: #fff2ef; }
+.day-cell.is-workday { background: #f1f2f2; }
+.holiday-badge { position: absolute; top: 3px; left: 4px; font-size: 10px; line-height: 1; font-weight: 700; color: #b85b4b; }
+.is-workday .holiday-badge { color: #687477; }
 .day-subtitle.special { color: var(--accent); font-weight: 650; }
 .day-cell.outside { opacity: .32; }
 .day-cell.is-today { background: #aa4b38; color: white; box-shadow: 0 6px 16px #aa4b3826; }
@@ -57,10 +61,15 @@ button:disabled { cursor: default; opacity: .35; }
   .calendar-grid { gap: 6px; }
   .dialog-backdrop { align-items: center; }
 }
+@media (min-width: 1440px) {
+  .year-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 20px; }
+  .month-card { padding: 16px; }
+  .calendar-grid { gap: 4px; }
+}
 @media (max-width: 639px) {
   .toolbar { min-height: 56px; }
   .toolbar h1 { font-size: 16px; }
-  .day-cell { height: clamp(52px, 15.5vw, 68px); }
+  .day-cell { height: clamp(50px, 14.5vw, 64px); }
   .day-number { font-size: 22px; }
   .day-subtitle { font-size: 11px; }
   .detail-panel, .settings-panel { border-radius: 22px 22px 16px 16px; padding: 25px; }
