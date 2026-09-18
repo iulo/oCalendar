@@ -34,11 +34,12 @@ const ranges: HolidayRange[] = [
 
 const holidayMap = new Map<string, string>()
 const workdayMap = new Set<string>()
+const localKey = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 for (const range of ranges) {
   const date = new Date(`${range.start}T00:00:00`)
   const end = new Date(`${range.end}T00:00:00`)
   while (date <= end) {
-    holidayMap.set(date.toISOString().slice(0, 10), range.name)
+    holidayMap.set(localKey(date), range.name)
     date.setDate(date.getDate() + 1)
   }
   range.workdays?.forEach(day => workdayMap.add(day))
