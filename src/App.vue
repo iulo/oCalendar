@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { dateKey, getLunar, monthDays, type CalendarDay } from './calendar'
 
 type Theme = 'paper' | 'grid'
@@ -47,11 +47,15 @@ function changeYear(delta: number) {
   selected.value = null
 }
 
-async function goToday() {
+async function scrollToToday(behavior: ScrollBehavior = 'smooth') {
   year.value = currentYear
   selected.value = null
   await nextTick()
-  document.getElementById(`day-${dateKey(now)}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  document.getElementById(`day-${dateKey(now)}`)?.scrollIntoView({ behavior, block: 'center' })
+}
+
+async function goToday() {
+  await scrollToToday()
 }
 
 function selectDay(day: CalendarDay) {
@@ -73,6 +77,7 @@ function handleKeydown(event: KeyboardEvent) {
 }
 
 const selectedLunar = computed(() => selected.value ? getLunar(selected.value.date).label : '')
+onMounted(() => { void scrollToToday('auto') })
 </script>
 
 <template>
@@ -87,7 +92,7 @@ const selectedLunar = computed(() => selected.value ? getLunar(selected.value.da
             <input id="year-input" class="year-input w-12 sm:w-13 border-0 bg-transparent text-center text-sm font-600 text-stone-700 tabular-nums outline-none" type="number" min="1900" max="2100" :value="year" @change="handleYearInput" />
             <button class="icon-button h-8 w-7 sm:w-8 text-xl" type="button" aria-label="下一年" :disabled="year >= 2100" @click="changeYear(1)">›</button>
           </div>
-          <button class="surface rounded-full px-3 sm:px-4 h-10 text-sm font-600 cursor-pointer hover:bg-stone-50" type="button" @click="goToday">今天</button>
+          <button class="today-button rounded-full px-3 sm:px-4 h-10 text-sm font-600 cursor-pointer" type="button" @click="goToday">今天</button>
           <button class="icon-button h-10 w-10" type="button" aria-label="打开设置" @click="settingsOpen = true">
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--page-bg)"/><circle cx="15" cy="17" r="2" fill="var(--page-bg)"/></svg>
           </button>

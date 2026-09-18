@@ -11,6 +11,10 @@ html { scroll-behavior: smooth; }
 body { margin: 0; }
 button, input { font: inherit; }
 button:disabled { cursor: default; opacity: .35; }
+.today-button { border: 1px solid #e7e3de; background: rgba(255, 255, 255, .9); color: #44403c; transition: background-color .18s, border-color .18s, color .18s, transform .12s; }
+.today-button:hover { background: #fafaf9; color: #292524; }
+.today-button:active { transform: translateY(1px) scale(.97); }
+.today-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .app-shell { --page-bg: #f8f7f4; --accent: #a64a35; background: var(--page-bg); }
 .page-header { background-color: color-mix(in srgb, var(--page-bg) 92%, transparent); }
 .toolbar { min-height: 60px; padding-top: env(safe-area-inset-top); }
