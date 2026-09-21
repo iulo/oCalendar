@@ -31,6 +31,7 @@ watch(settings, value => localStorage.setItem('ocalendar-settings', JSON.stringi
 const year = ref(currentYear)
 const selected = ref<CalendarDay | null>(null)
 const settingsOpen = ref(false)
+const progressOpen = ref(false)
 const monthNames = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
 const weekdays = computed(() => settings.value.weekStart === 1
   ? ['一', '二', '三', '四', '五', '六', '日']
@@ -77,6 +78,19 @@ function handleKeydown(event: KeyboardEvent) {
 }
 
 const selectedLunar = computed(() => selected.value ? getLunar(selected.value.date).label : '')
+const todayLabel = computed(() => `${currentYear}年${now.getMonth() + 1}月${now.getDate()}日`)
+const yearProgress = computed(() => {
+  const start = new Date(currentYear, 0, 1).getTime()
+  const end = new Date(currentYear + 1, 0, 1).getTime()
+  return Math.round((now.getTime() - start) / (end - start) * 100)
+})
+const progressItems = computed(() => [
+  { label: '年', value: yearProgress.value },
+  { label: '季度', value: Math.round((now.getMonth() % 3 * 30 + now.getDate()) / 91 * 100) },
+  { label: '月', value: Math.round(now.getDate() / new Date(currentYear, now.getMonth() + 1, 0).getDate() * 100) },
+  { label: '周', value: Math.round((now.getDay() || 7) / 7 * 100) },
+  { label: '日', value: Math.round((now.getHours() * 60 + now.getMinutes()) / 1440 * 100) }
+])
 onMounted(() => { void scrollToToday('auto') })
 </script>
 
@@ -84,7 +98,7 @@ onMounted(() => { void scrollToToday('auto') })
   <div class="app-shell min-h-screen text-stone-800" :class="`theme-${settings.theme}`" @keydown="handleKeydown">
     <header class="page-header sticky top-0 z-30 bg-[#f8f7f4]/92 backdrop-blur-lg">
       <div class="toolbar mx-auto max-w-1500px px-3 sm:px-7 lg:px-11 flex items-center justify-between gap-2">
-        <h1 class="m-0 shrink-0 text-lg sm:text-xl font-700 tracking-tight text-stone-900">哦！日历</h1>
+        <div class="title-group flex items-baseline gap-3"><h1 class="m-0 shrink-0 text-lg sm:text-xl font-700 tracking-tight text-stone-900">哦！日历</h1><span class="today-date" aria-label="今天的日期">今天是：{{ todayLabel }}</span></div>
         <nav class="flex items-center gap-1 sm:gap-2" aria-label="日历操作">
           <div class="year-control surface rounded-full flex items-center p-1">
             <button class="icon-button h-8 w-7 sm:w-8 text-xl" type="button" aria-label="上一年" :disabled="year <= 1900" @click="changeYear(-1)">‹</button>
@@ -93,6 +107,7 @@ onMounted(() => { void scrollToToday('auto') })
             <button class="icon-button h-8 w-7 sm:w-8 text-xl" type="button" aria-label="下一年" :disabled="year >= 2100" @click="changeYear(1)">›</button>
           </div>
           <button class="today-button rounded-full px-3 sm:px-4 h-10 text-sm font-600 cursor-pointer" type="button" @click="goToday">今天</button>
+          <button class="progress-button" type="button" :aria-label="`今年进度 ${yearProgress}%`" @click="progressOpen = true"><span class="progress-ring" :style="{ '--progress': `${yearProgress}%` }"></span><span class="progress-button-text">今年 {{ yearProgress }}%</span></button>
           <button class="icon-button h-10 w-10" type="button" aria-label="打开设置" @click="settingsOpen = true">
             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2" fill="var(--page-bg)"/><circle cx="15" cy="17" r="2" fill="var(--page-bg)"/></svg>
           </button>
@@ -157,6 +172,13 @@ onMounted(() => { void scrollToToday('auto') })
         <label class="setting-row"><span>每月固定六行</span><input v-model="settings.fixedRows" type="checkbox" /></label>
         <div class="pt-5"><p class="m-0 mb-3 font-600">显示样式</p><div class="grid grid-cols-2 gap-3"><button class="theme-option" :class="{ active: settings.theme === 'paper' }" type="button" @click="settings.theme = 'paper'">留白</button><button class="theme-option" :class="{ active: settings.theme === 'grid' }" type="button" @click="settings.theme = 'grid'">格子</button></div></div>
         <button class="mt-7 w-full rounded-xl bg-stone-900 px-5 py-3 text-white font-600 cursor-pointer border-0 hover:bg-stone-700" type="button" @click="settingsOpen = false">完成</button>
+      </section>
+    </div>
+
+    <div v-if="progressOpen" class="dialog-backdrop" @click.self="progressOpen = false">
+      <section class="progress-panel surface" role="dialog" aria-modal="true" aria-labelledby="progress-title">
+        <div class="flex items-center justify-between mb-5"><div><p class="m-0 mb-1 text-xs font-700 tracking-[.2em] text-orange-700">YEAR IN PROGRESS</p><h2 id="progress-title" class="m-0 text-2xl">今年进度</h2></div><button class="icon-button h-10 w-10 text-2xl" type="button" aria-label="关闭今年进度" @click="progressOpen = false">×</button></div>
+        <div class="progress-list"><div v-for="item in progressItems" :key="item.label" class="progress-row"><span class="progress-label">{{ item.label }}</span><span class="progress-track"><i :style="{ width: `${item.value}%` }"></i></span><span class="progress-value">{{ item.value }}%</span></div></div>
       </section>
     </div>
   </div>
