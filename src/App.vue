@@ -79,6 +79,10 @@ function handleKeydown(event: KeyboardEvent) {
 
 const selectedLunar = computed(() => selected.value ? getLunar(selected.value.date).label : '')
 const todayLabel = computed(() => `${currentYear}年${now.getMonth() + 1}月${now.getDate()}日`)
+const todayLunarLabel = computed(() => {
+  const lunar = getLunar(now)
+  return lunar.label === lunar.month ? lunar.month : `${lunar.month}${lunar.label}`
+})
 const yearProgress = computed(() => {
   const start = new Date(currentYear, 0, 1).getTime()
   const end = new Date(currentYear + 1, 0, 1).getTime()
@@ -98,7 +102,7 @@ onMounted(() => { void scrollToToday('auto') })
   <div class="app-shell min-h-screen text-stone-800" :class="`theme-${settings.theme}`" @keydown="handleKeydown">
     <header class="page-header sticky top-0 z-30 bg-[#f8f7f4]/92 backdrop-blur-lg">
       <div class="toolbar mx-auto max-w-1500px px-3 sm:px-7 lg:px-11 flex items-center justify-between gap-2">
-        <div class="title-group flex items-baseline gap-3"><h1 class="m-0 shrink-0 text-lg sm:text-xl font-700 tracking-tight text-stone-900">哦！日历</h1><span class="today-date" aria-label="今天的日期">今天是：{{ todayLabel }}</span></div>
+        <div class="title-group flex items-baseline gap-3"><h1 class="m-0 shrink-0 text-lg sm:text-xl font-700 tracking-tight text-stone-900">哦！日历</h1><span class="today-date" aria-label="今天的日期">今天是：{{ todayLabel }} · 农历{{ todayLunarLabel }}</span></div>
         <nav class="flex items-center gap-1 sm:gap-2" aria-label="日历操作">
           <div class="year-control surface rounded-full flex items-center p-1">
             <button class="icon-button h-8 w-7 sm:w-8 text-xl" type="button" aria-label="上一年" :disabled="year <= 1900" @click="changeYear(-1)">‹</button>

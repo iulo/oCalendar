@@ -60,7 +60,7 @@ function getSolarTerms(year: number): Map<string, string> {
   return result
 }
 
-export function getLunar(date: Date): { label: string; festival: string } {
+export function getLunar(date: Date): { label: string; month: string; festival: string } {
   const parts = lunarFormatter.formatToParts(date)
   const month = parts.find(part => part.type === 'month')?.value ?? ''
   const day = Number(parts.find(part => part.type === 'day')?.value ?? 0)
@@ -74,7 +74,7 @@ export function getLunar(date: Date): { label: string; festival: string } {
     if (nextParts.find(part => part.type === 'month')?.value === '正月' &&
         nextParts.find(part => part.type === 'day')?.value === '1') festival = '除夕'
   }
-  return { label, festival }
+  return { label, month: normalizedMonth, festival }
 }
 
 export function isoWeek(date: Date): number {
